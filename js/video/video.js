@@ -25,6 +25,12 @@ $(function () {
       lotCode = path.split("?")[1];
       var e = pubmethod.tools.type(lotCode);
       void 0 != e && pubmethod.doAjax("", lotCode, e, !0);
+
+      if(lotCode == '11108')  $("#logoText").text("极速28");
+      if(lotCode == '11107')  $("#logoText").text("腾讯28");
+      if(lotCode == '11141')  $("#logoText").text("比特币28");
+      if(lotCode == '11111')  $("#logoText").text("加拿大28");
+      if(lotCode == '11112')  $("#logoText").text("台湾28");
     } else alert("外链代码有误，请重新获取代码！");
   }),
   (pubmethod.tools = {
@@ -37,8 +43,8 @@ $(function () {
             ["sum3", "11108", "11107", "11141"],
             ["ms88kj4", "11111", "11112"],
             ["gxklsf", "10038"],
-            ["jisuft", "10035", "10057", "10058"],
-            ["jisuft1", "11105", "11131"],
+            ["jisuft", "10035", "10057", "10058", "11131"],
+            ["jisuft1", "11105"],
             ["twbg", "10047"],
             ["fcsd", "10041", "10043"],
             ["bjkl8", "10013", "10014", "10054", "10073", "10080", "10082"],
@@ -181,6 +187,8 @@ $(function () {
     var url = pubmethod.tools.action[type];
     if(type == 'sum3' || type =='jisuft1')
       url += String(lotCode).substring(3);
+    if(type == 'jisuft' && lotCode == '11131')
+      url = 'https://act.fsaad334546gfa.com/game/results?gameType=31'
     if(type == 'ms88kj4') {
       if(lotCode == '11111') // jianada28
         url = 'https://api.168kj1.com/api/getCurData?lottype=jianada28';
@@ -218,7 +226,7 @@ $(function () {
             pubmethod.repeatAjax(pubmethod.ajaxM, e);
           },
         })
-    } else if("sum3" === e.type || "jisuft1" === e.type || 'ms88kj4' === e.type) {
+    } else if("sum3" === e.type || "jisuft1" === e.type || 'ms88kj4' === e.type || (e.type == 'jisuft' && e.lotCode == '11131')) {
       $.ajax({
         url:  e.url,
         type: "GET",
@@ -755,29 +763,57 @@ $(function () {
       }
     },
     jisuft: function (e, t) {
-      var o = pubmethod.tools.ifObj(e);
-      if ("100002" == o.result.businessCode) throw new Error("error");
-      if (0 == o.errorCode && 0 == o.result.businessCode) {
-        (o = o.result.data),
-          $("#status").css(
-            "background-image",
-            "../images/logo_" + o.lotCode + ".png"
-          ),
-          $(".logo")
-            .find("img")
-            .attr("src", "images/logo_" + o.lotCode + ".png");
-        for (
-          var r = pubmethod.tools.cutTime(o.drawTime, o.serverTime),
-            s = o.preDrawCode.split(","),
-            i = [],
-            u = 0,
-            n = s.length;
-          u < n;
-          u++
-        )
-          "0" == s[u].substr(0, 1)
-            ? i.push(1 * s[u].substr(1, 1))
-            : i.push(1 * s[u]);
+      let o, r, s, i, n, u;
+      if(t.lotCode != '11131')
+        o = pubmethod.tools.ifObj(e);
+      if (t.lotCode != '11131' && "100002" == o.result.businessCode) throw new Error("error");
+      if (t.lotCode == '11131' || (0 == o.errorCode && 0 == o.result.businessCode)) {
+        if(t.lotCode != '11131') {
+          (o = o.result.data),
+            $("#status").css(
+              "background-image",
+              "../images/logo_" + o.lotCode + ".png"
+            ),
+            $(".logo")
+              .find("img")
+              .attr("src", "images/logo_" + o.lotCode + ".png");
+          for (
+            r = pubmethod.tools.cutTime(o.drawTime, o.serverTime),
+              s = o.preDrawCode.split(","),
+              i = [],
+              u = 0,
+              n = s.length;
+            u < n;
+            u++
+          )
+            "0" == s[u].substr(0, 1)
+              ? i.push(1 * s[u].substr(1, 1))
+              : i.push(1 * s[u]);
+        } else {
+          let data = e['body'][0] ?? {};
+          let dataArray = data['result'].split(",");
+          let l = {
+            nextIssue: parseInt(data['termId']) + 1,
+            drawTime: moment(data['closeTime']).add("1", "minutes").format("YYYY-MM-DD HH:mm:ss"),
+            serverTime: moment(data['timestamp']).add(String(Math.floor(e['timestamp'] / 1000) % 60), "seconds").format("YYYY-MM-DD HH:mm:ss"),
+            preDrawTime: data['timestamp'],
+          }
+          r = pubmethod.tools.cutTime(l.drawTime, l.serverTime);
+          i = dataArray.slice(0, 10).join(",");
+          o = {
+            preDrawCode: i,
+            drawCount: 20,
+            preDrawIssue: l.nextIssue,
+            sumFS: dataArray[10],
+            sumBigSamll: dataArray[11] == '大' ? '0' : '1',
+            sumSingleDouble: dataArray[12] == '单' ? '0' : '1',
+            firstDT: dataArray[13] == '龙' ? '0' : '1',
+            secondDT: dataArray[14] == '龙' ? '0' : '1',
+            thirdDT: dataArray[15] == '龙' ? '0' : '1',
+            fourthDT: dataArray[16] == '龙' ? '0' : '1',
+            fifthDT: dataArray[17] == '龙' ? '0' : '1'
+          }
+        }
         if (
           ((r = r < 0 ? 1 : r),
           (o.cutime = r),
