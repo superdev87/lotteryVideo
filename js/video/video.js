@@ -183,9 +183,9 @@ $(function () {
       url += String(lotCode).substring(3);
     if(type == 'ms88kj4') {
       if(lotCode == '11111') // jianada28
-        url = 'http://206.119.166.64:5000/api/getCurData?lottype=jianada28';
+        url = 'https://api.168kj1.com/api/getCurData?lottype=jianada28';
       else
-        url = 'http://206.119.166.64:5000/api/getCurData?lottype=taiwan28';
+        url = 'http://api.168kj1.com/api/getCurData?lottype=taiwan28';
     }
     var s = {
       url: url,
