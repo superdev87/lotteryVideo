@@ -553,7 +553,7 @@ function operatorTime(e, i) {
 }
 var env = "productionEnv",
   config = {
-    publicUrl: "//api.apiose188.com/",
+    publicUrl: "https://api.apiose188.com/",
     publicUrl_six: "https://1680660.com/",
     publicUrl_blockChain: "https://bc-api.bc1880.com/",
     wwwUrl: "//1682018.co",

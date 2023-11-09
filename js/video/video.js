@@ -43,7 +43,7 @@ $(function () {
             ["fcsd", "10041", "10043"],
             ["bjkl8", "10013", "10014", "10054", "10073", "10080", "10082"],
             ["klsf", "10005", "10011", "10034", "10053", "10078", "10083"],
-            ["pk10", "10001", "10012", "10037", "10079"],
+            ["pk10", "10001", "10012", "10079"],
             ["qgc", "10039", "10040", "10042", "10044", "10045"],
             [
               "ssc",
@@ -146,7 +146,7 @@ $(function () {
         kuai3: "video/kuai3_video/Kuai3.html",
         shiyi5: "video/11x5_video/index.html",
         jisuft: "video/jisuft_video/index.html",
-        jisuft1: "video/jisuft_video/index.html",
+        jisuft1: "video/PK10/index.html",
         xgc: "video/SixColor_animate/index.html",
       }[e];
     },
@@ -810,6 +810,7 @@ $(function () {
     jisuft1: function(resData, t) {
       let data = resData['body'][0] ?? {};
       let dataArray = data['result'].split(",");
+
       let l = {
         nextIssue: parseInt(data['termId']) + 1,
         drawTime: moment(data['closeTime']).add("1", "minutes").format("YYYY-MM-DD HH:mm:ss"),
@@ -818,6 +819,7 @@ $(function () {
       }
       let r = pubmethod.tools.cutTime(l.drawTime, l.serverTime);
       let preDrawCode = dataArray.slice(0, 10).join(",");
+
       if (((r = r < 0 ? 1 : r) && t.flag)) {
         showcurrentresult(preDrawCode);
         $("#currentdrawid").text(20);
@@ -830,12 +832,19 @@ $(function () {
         $("#stat2_3").text(dataArray[15]);
         $("#stat2_4").text(dataArray[16]);
         $("#stat2_5").text(dataArray[17]);
-        startcountdown(r, t);
-      } else {
+        $("#hlogo")
+          .find("img")
+          .attr("src", "images/logo/logo-" + t.lotCode + ".png"),
+          $(".statuslogo").css({
+            background:
+              "url(images/logo/logo-" + t.lotCode + ".png)no-repeat",
+          }),
+          startcountdown(r, t);
+      }
+      else {
         if (!t.flag && r <= 1) throw new Error("error");
-        finishData = dataArray.slice(0, 10).map(value => parseInt(value, 10)); 
         setTimeout(function () {
-          finishgame(finishData.toString());
+          finishgame(preDrawCode);
         }, "1000"),
           setTimeout(function () {
             startcountdown(r - 11, t);
