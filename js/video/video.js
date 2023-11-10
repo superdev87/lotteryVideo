@@ -193,7 +193,7 @@ $(function () {
       if(lotCode == '11111') // jianada28
         url = 'https://api.168kj1.com/api/getCurData?lottype=jianada28';
       else
-        url = 'http://api.168kj1.com/api/getCurData?lottype=taiwan28';
+        url = 'https://api.168kj1.com/api/getCurData?lottype=taiwan28';
     }
     var s = {
       url: url,
