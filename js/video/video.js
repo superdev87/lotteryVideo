@@ -375,16 +375,17 @@ $(function () {
     ms88kj4: function(resData, t) {
       var data = resData['result']['data'];
       var numArr = data['preDrawCode'].split(',').slice(0, 3).map(value => parseInt(value, 10));
+      var diffTime = parseInt(data['countTime']);
+      var serverTime = moment(data['drawTime']).subtract(diffTime, "seconds").format("YYYY-MM-DD HH:mm:ss");
       var l = {
         nextIssue: data['drawIssue'],
         drawTime: data['drawTime'],
         numArr: numArr,
-        serverTime: data['serverTime'],
+        serverTime: serverTime,
         preDrawTime: data['preDrawTime'],
       }
       r = pubmethod.tools.cutTime(l.drawTime, l.serverTime);
       r = r < 0 ? 1 : r;
-      // alert(JSON.stringify(l));
       if (t.flag) pcEgg.startVid(l, t);
       else {
         if (!t.flag && r <= 1) throw new Error("error");
