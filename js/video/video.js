@@ -373,7 +373,7 @@ $(function () {
       }
     },
     ms88kj4: function(resData, t) {
-      var data = resData['result']['data'];
+      var data = resData;
       var numArr = data['preDrawCode'].split(',').slice(0, 3).map(value => parseInt(value, 10));
       var diffTime = parseInt(data['countTime']);
       var serverTime = moment(data['drawTime']).subtract(diffTime, "seconds").format("YYYY-MM-DD HH:mm:ss");
